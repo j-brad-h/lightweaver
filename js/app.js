@@ -38,11 +38,11 @@ class App {
     }
 
     initializeEventListeners() {
-        this.ui.recordButton.addEventListener('click', () => this.handleButtonClick());
+    this.ui.recordButton.addEventListener('click',  () => this.handleButtonClick());
     }
 
     async startRobotStage() {
-        await this.tts.speakWithBrowser("Welcome to the voice cloning assistant. I'll be guiding you through the process. Please respond to my prompts.");
+        await this.tts.speakWithBrowser("Welcome to Light Weaver. I'll be guiding you through the process. Please respond to my prompts.");
     }
 
     async startHumanStage() {
@@ -50,7 +50,7 @@ class App {
             throw new Error('No voice ID available for human stage');
         }
         this.tts.voiceId = this.stateManager.getVoiceId();
-        await this.tts.speakWithElevenLabs("Thank you for your recordings. I've cloned your voice and will now use it for our conversation.");
+        // await this.tts.speakWithElevenLabs("Thank you for your recordings. I've cloned your voice and will now use it for our conversation.");
     }
 
     async handleVoiceCloning() {
@@ -91,7 +91,8 @@ class App {
                     const transcription = await this.api.transcribeAudio(recording);
                     if (transcription && transcription.text) {
                         // Get AI response
-                        const aiResponse = await this.chatService.analyzeTranscription(transcription.text);
+                        const currentState = this.stateManager.getCurrentState();
+                        const aiResponse = await this.chatService.analyzeTranscription(transcription.text, currentState);
                         
                         // Speak the response based on current stage
                         if (this.stateManager.isRobotStage()) {
