@@ -6,6 +6,13 @@ export class UIManager {
         this.recordingsList = document.getElementById('recordingsList');
         this.transcriptionButton = document.getElementById('transcribeButton');
         this.transcriptionDisplay = document.getElementById('transcriptionDisplay');
+        this.conversationDisplay = document.getElementById('conversationDisplay');
+        if (!this.conversationDisplay) {
+            this.conversationDisplay = document.createElement('div');
+            this.conversationDisplay.id = 'conversationDisplay';
+            this.conversationDisplay.className = 'conversation-display';
+            document.body.appendChild(this.conversationDisplay);
+        }
     }
 
     updateRecordingButton(isRecording) {
@@ -76,7 +83,6 @@ export class UIManager {
 
     displayTranscription(text) {
         if (!this.transcriptionDisplay) {
-            // Create transcription display if it doesn't exist
             this.transcriptionDisplay = document.createElement('div');
             this.transcriptionDisplay.id = 'transcriptionDisplay';
             this.transcriptionDisplay.className = 'transcription-display';
@@ -85,9 +91,28 @@ export class UIManager {
         
         this.transcriptionDisplay.innerHTML = `
             <div class="transcription-content">
-                <h3>Transcription</h3>
+                <h3>Your Message</h3>
                 <p>${text}</p>
             </div>
         `;
+    }
+
+    displayAIResponse(response) {
+        const responseElement = document.createElement('div');
+        responseElement.className = 'ai-response';
+        responseElement.innerHTML = `
+            <div class="response-content">
+                <h3>AI Follow-up Question</h3>
+                <p>${response}</p>
+            </div>
+        `;
+        this.conversationDisplay.appendChild(responseElement);
+        this.conversationDisplay.scrollTop = this.conversationDisplay.scrollHeight;
+    }
+
+    clearConversation() {
+        if (this.conversationDisplay) {
+            this.conversationDisplay.innerHTML = '';
+        }
     }
 } 

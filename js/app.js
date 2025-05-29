@@ -1,12 +1,14 @@
 import { AudioRecorder } from './recorder.js';
 import { UIManager } from './ui-manager.js';
 import { ElevenLabsAPI } from './api-service.js';
+import { ChatService } from './chat-service.js';
 
 class App {
-    constructor(apiKey) {
+    constructor(elevenLabsApiKey, openaiApiKey) {
         this.recorder = new AudioRecorder();
         this.ui = new UIManager();
-        this.api = new ElevenLabsAPI(apiKey);
+        this.api = new ElevenLabsAPI(elevenLabsApiKey);
+        this.chatService = new ChatService(openaiApiKey);
         this.initializeEventListeners();
     }
 
@@ -21,6 +23,8 @@ class App {
             const recording = await this.recorder.stopRecording();
             if (recording) {
                 this.ui.addRecording(recording);
+                // Automatically transcribe and analyze the recording
+                await this.handleTranscribeRecording({ detail: { index: this.ui.getRecordings().length - 1 } });
             }
             this.ui.updateRecordingButton(false);
         } else {
@@ -64,19 +68,27 @@ class App {
         }
 
         try {
+            // Transcribe the recording
             const response = await this.api.transcribeAudio(recording);
             if (response && response.text) {
                 this.ui.displayTranscription(response.text);
+                
+                // Analyze the transcription with ChatGPT
+                const aiResponse = await this.chatService.analyzeTranscription(response.text);
+                this.ui.displayAIResponse(aiResponse);
             } else {
                 throw new Error('No transcription text in response');
             }
         } catch (error) {
-            alert('Error transcribing audio: ' + error.message);
+            alert('Error processing audio: ' + error.message);
         }
     }
 }
 
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new App('sk_b922eedce1e20325c6a4d42b8354769a0b4f8700d68450f5');
+    const app = new App(
+        'sk_b922eedce1e20325c6a4d42b8354769a0b4f8700d68450f5',  // ElevenLabs API key
+        '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'  
+    );
 }); 

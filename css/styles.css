@@ -63,4 +63,52 @@ button[onclick*="Delete"] {
 .recording-item audio {
     width: 100%;
     margin-bottom: 8px;
+}
+
+.conversation-display {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.transcription-content, .response-content {
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.transcription-content {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.response-content {
+    background: #f3e5f5;
+    border-left: 4px solid #9c27b0;
+}
+
+.transcription-content h3, .response-content h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.transcription-content p, .response-content p {
+    margin: 0;
+    line-height: 1.5;
+    color: #444;
+}
+
+.ai-response {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 } 
