@@ -14,8 +14,8 @@ export class StateManager {
         this.onStateChange = null;
         this.robotStageInteractions = 0;
         this.humanStageInteractions = 0;
-        this.requiredRobotInteractions = 3; // Can be adjusted
-        this.requiredHumanInteractions = 6; // Can be adjusted
+        this.requiredRobotInteractions = 5; // Can be adjusted
+        this.requiredHumanInteractions = 5; // Can be adjusted
     }
 
     setOnStateChange(callback) {

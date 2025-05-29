@@ -39,7 +39,7 @@ class App {
     }
 
     async startRobotStage() {
-        await this.tts.speakWithBrowser("Welcome to Light Weaver. I'll be guiding you through the process. Please respond to my prompts.");
+        await this.tts.speakWithBrowser("Welcome to Light Weaver. I'll be guiding you through the process. To start, tell me a bit about yourself!");
     }
 
     async startHumanStage() {
