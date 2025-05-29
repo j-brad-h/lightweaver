@@ -35,8 +35,17 @@ class App {
     async handleSendButtonClick() {
         try {
             const recordings = this.ui.getRecordings();
-            await this.api.sendRecordings(recordings);
-            alert('Recordings sent successfully!');
+            const response = await this.api.sendRecordings(recordings);
+            const voiceId = this.api.getVoiceId();
+
+            if (voiceId) {
+                alert(`Recordings sent successfully! Voice ID: ${voiceId}`);
+                // You can store this voice ID in localStorage if you want to persist it
+                localStorage.setItem('lastVoiceId', voiceId);
+            } else {
+                alert('Recordings sent, but no voice ID was returned.');
+            }
+
             this.ui.clearRecordings();
         } catch (error) {
             alert('Error sending recordings: ' + error.message);

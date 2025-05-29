@@ -1,6 +1,11 @@
 export class ElevenLabsAPI {
     constructor(apiKey) {
         this.apiKey = apiKey;
+        this.voiceId = null;  // Store the voice ID
+    }
+
+    getVoiceId() {
+        return this.voiceId;
     }
 
     async sendRecordings(recordings, voiceName = 'voice_name') {
@@ -20,12 +25,10 @@ export class ElevenLabsAPI {
 
         for (const recording of recordings) {
             // Create a File object with explicit type
-            const file = new File([recording.blob], recording.name, {
-                type: 'audio/webm;codecs=opus'
-            });
+            const file = new File([recording.blob], recording.name);
 
             // Append with explicit type in the filename, matching curl format
-            formData.append('files[]', file);
+            formData.append('files', file);
 
             console.log('Added file to FormData:', {
                 name: recording.name,
@@ -63,6 +66,15 @@ export class ElevenLabsAPI {
 
             const responseData = await response.json();
             console.log('API Response:', responseData);
+
+            // Extract and store the voice ID
+            if (responseData.voice_id) {
+                this.voiceId = responseData.voice_id;
+                console.log('Stored voice ID:', this.voiceId);
+            } else {
+                console.warn('No voice ID found in response:', responseData);
+            }
+
             return responseData;
         } catch (error) {
             console.error('Error sending recordings:', error);
