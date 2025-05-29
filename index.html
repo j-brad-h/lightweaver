@@ -4,19 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Recorder for ElevenLabs</title>
+    <title>Lightweaver</title>
     <link rel="stylesheet" href="min.css">
 </head>
 
 <body>
-    <h1>Audio Recorder for ElevenLabs</h1>
+    <h1>Voice Cloning Assistant</h1>
 
-    <div>
-        <button id="recordButton">Start Recording</button>
-        <button id="sendButton" disabled>Send to ElevenLabs</button>
+    <div id="stageIndicator" class="stage-indicator">
+        <span>Current Stage: </span>
+        <span id="currentStage">Robot Stage</span>
     </div>
 
-    <ul id="recordingsList" class="recordings-list"></ul>
+    <div class="controls">
+        <button id="recordButton">Start Recording</button>
+    </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
