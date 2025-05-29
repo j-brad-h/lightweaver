@@ -8,7 +8,7 @@ export class ElevenLabsAPI {
         return this.voiceId;
     }
 
-    async sendRecordings(recordings, voiceName = 'voice_name') {
+    async createVoiceClone(recordings, voiceName = 'voice_name') {
         if (recordings.length === 0) {
             throw new Error('No recordings to send');
         }
@@ -78,6 +78,47 @@ export class ElevenLabsAPI {
             return responseData;
         } catch (error) {
             console.error('Error sending recordings:', error);
+            throw error;
+        }
+    }
+
+    async transcribeAudio(audioRecording, modelId = 'scribe_v1') {
+        if (!audioRecording || !audioRecording.blob) {
+            throw new Error('No audio recording provided for transcription');
+        }
+
+        const formData = new FormData();
+        formData.append('model_id', modelId);
+        
+        // Create a File object from the audio blob
+        const file = new File([audioRecording.blob], audioRecording.name);
+        formData.append('file', file);
+
+        try {
+            console.log('Sending transcription request to ElevenLabs API...');
+            const response = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'xi-api-key': this.apiKey
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Transcription API Error Response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    body: errorText
+                });
+                throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
+            }
+
+            const responseData = await response.json();
+            console.log('Transcription API Response:', responseData);
+            return responseData;
+        } catch (error) {
+            console.error('Error transcribing audio:', error);
             throw error;
         }
     }

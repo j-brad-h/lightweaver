@@ -13,6 +13,7 @@ class App {
     initializeEventListeners() {
         this.ui.recordButton.addEventListener('click', () => this.handleRecordButtonClick());
         this.ui.sendButton.addEventListener('click', () => this.handleSendButtonClick());
+        document.addEventListener('transcribeRecording', (event) => this.handleTranscribeRecording(event));
     }
 
     async handleRecordButtonClick() {
@@ -35,7 +36,7 @@ class App {
     async handleSendButtonClick() {
         try {
             const recordings = this.ui.getRecordings();
-            const response = await this.api.sendRecordings(recordings);
+            const response = await this.api.createVoiceClone(recordings);
             const voiceId = this.api.getVoiceId();
 
             if (voiceId) {
@@ -49,6 +50,28 @@ class App {
             this.ui.clearRecordings();
         } catch (error) {
             alert('Error sending recordings: ' + error.message);
+        }
+    }
+
+    async handleTranscribeRecording(event) {
+        const { index } = event.detail;
+        const recordings = this.ui.getRecordings();
+        const recording = recordings[index];
+
+        if (!recording) {
+            alert('Recording not found');
+            return;
+        }
+
+        try {
+            const response = await this.api.transcribeAudio(recording);
+            if (response && response.text) {
+                this.ui.displayTranscription(response.text);
+            } else {
+                throw new Error('No transcription text in response');
+            }
+        } catch (error) {
+            alert('Error transcribing audio: ' + error.message);
         }
     }
 }
