@@ -9,18 +9,66 @@
 </head>
 
 <body>
-    <h1>Voice Cloning Assistant</h1>
-
-    <div id="stageIndicator" class="stage-indicator">
-        <span>Current Stage: </span>
-        <span id="currentStage">Robot Stage</span>
-    </div>
-
+    <div class="background-ticker"></div>
     <div class="controls">
-        <button id="recordButton">Start Recording</button>
+        <button id="recordButton">start weaving</button>
     </div>
-
     <script type="module" src="js/app.js"></script>
+    <script>
+        function mutateWord(base, mutationRate = 0.3) {
+            const letters = 'abcdefghijklmnopqrstuvwxyz';
+            const arr = base.split('');
+            const numToMutate = Math.max(1, Math.round(arr.length * mutationRate));
+            const indices = [];
+            while (indices.length < numToMutate) {
+                const idx = Math.floor(Math.random() * arr.length);
+                if (!indices.includes(idx)) indices.push(idx);
+            }
+            for (const idx of indices) {
+                let newChar = arr[idx];
+                while (newChar === arr[idx]) {
+                    newChar = letters[Math.floor(Math.random() * letters.length)];
+                }
+                arr[idx] = newChar;
+            }
+            return arr.join('');
+        }
+        // Dynamically fill the background-ticker
+        function fillTicker() {
+            const ticker = document.querySelector('.background-ticker');
+            ticker.innerHTML = '';
+            const rowHeight = 32; // px, matches CSS height: 2.2em (approx 32px for 14px font)
+            const baseWord = 'lightweaver';
+            const gap = 8; // px, matches CSS gap
+            const spanWidth = 110; // px, rough width of 'lightweaver' in monospace 14px
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const numRows = Math.ceil(vh / rowHeight) + 1;
+            const spansPerRow = Math.ceil(vw / (spanWidth + gap)) * 2 + 4; // double for seamless + buffer
+            for (let r = 0; r < numRows; r++) {
+                const row = document.createElement('div');
+                row.className = 'ticker-row';
+                // Animation duration: random between 38s and 48s
+                let duration = (Math.random() * 10 + 38).toFixed(2);
+                // Mutate the word for this row
+                const mutatedWord = mutateWord(baseWord, 0.1);
+                for (let d = 0; d < 2; d++) {
+                    const content = document.createElement('div');
+                    content.className = 'ticker-content';
+                    content.style.animationDuration = duration + 's';
+                    for (let s = 0; s < spansPerRow; s++) {
+                        const span = document.createElement('span');
+                        span.textContent = mutatedWord;
+                        content.appendChild(span);
+                    }
+                    row.appendChild(content);
+                }
+                ticker.appendChild(row);
+            }
+        }
+        window.addEventListener('resize', fillTicker);
+        window.addEventListener('DOMContentLoaded', fillTicker);
+    </script>
 </body>
 
 </html>

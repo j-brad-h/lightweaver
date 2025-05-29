@@ -20,9 +20,6 @@ class App {
 
     initializeStateManager() {
         this.stateManager.setOnStateChange(async (oldState, newState) => {
-            // Update UI to reflect new state
-            this.ui.updateStageIndicator(newState);
-
             switch (newState) {
                 case AppState.ROBOT_STAGE:
                     await this.startRobotStage();
@@ -92,7 +89,7 @@ class App {
                     if (transcription && transcription.text) {
                         // Get AI response
                         const aiResponse = await this.chatService.analyzeTranscription(transcription.text);
-                        
+
                         // Speak the response based on current stage
                         if (this.stateManager.isRobotStage()) {
                             await this.tts.speakWithBrowser(aiResponse);
@@ -100,9 +97,6 @@ class App {
                             await this.tts.speakWithElevenLabs(aiResponse);
                         }
 
-                        // Update UI with both transcription and response
-                        this.ui.displayTranscription(transcription.text);
-                        this.ui.displayAIResponse(aiResponse);
                     }
                 } catch (error) {
                     console.error('Processing failed:', error);
