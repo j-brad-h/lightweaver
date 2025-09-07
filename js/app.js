@@ -124,7 +124,7 @@ class App {
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     const app = new App(
-        'sk_b922eedce1e20325c6a4d42b8354769a0b4f8700d68450f5',  // ElevenLabs API key
-        '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'  // OpenAI API key
+        'YOUR_ELEVENLABS_KEY_HERE',  // ElevenLabs API key
+        'YOUR_OPENAI_KEY_HERE'  // OpenAI API key
     );
 }); 
